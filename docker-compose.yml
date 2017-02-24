@@ -4,6 +4,8 @@ services:
     image: $DATABASE_IMAGE
     ports:
       - $DATABASE_PORT
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       - MYSQL_ROOT_PASSWORD= 
       - MYSQL_ALLOW_EMPTY_PASSWORD="yes"

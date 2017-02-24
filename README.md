@@ -19,6 +19,8 @@ You have to follow a few steps and wait until Codefresh do the work and show you
 	- REPO_REVISION=branch,hash_value,...
 	- SAKAI_DATABASE=mariadb,mysql,oracle //Choose the database you want to use in your environment
 	- BINARY_RELEASE=11.0,11.1,11.2,... // Choose a release and don't build the code just test binary release (fast)
+	- MYSQL_VERSION=5.6.27,..
+	- ORACLE_VERSION=oracle-xe-11g,oracle-12c
 	
 # Advanced Configuration
 
