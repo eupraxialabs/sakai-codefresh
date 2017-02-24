@@ -105,6 +105,7 @@ steps:
       metadata:
         set:
           - database: ${{SAKAI_DATABASE}}
+          - version: ${{MYSQL_VERSION}}/${{ORACLE_VERSION}}
       when:
        condition:
         all:

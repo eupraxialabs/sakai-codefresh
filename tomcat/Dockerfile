@@ -9,5 +9,6 @@ COPY ./bin/ /usr/local/tomcat-base/bin/
 COPY ./conf/ /usr/local/tomcat-base/conf/
 COPY ./sakai/ /usr/local/tomcat-base/sakai/
 COPY ./sakai/${database}.properties /usr/local/tomcat-base/sakai/local.properties
+COPY ./db/init.sql /docker-entrypoint-initdb.d/init.sql
 
 EXPOSE 8080

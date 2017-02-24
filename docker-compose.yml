@@ -4,8 +4,8 @@ services:
     image: $DATABASE_IMAGE
     ports:
       - $DATABASE_PORT
-    volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    volumes_from:
+      - sakai
     environment:
       - MYSQL_ROOT_PASSWORD= 
       - MYSQL_ALLOW_EMPTY_PASSWORD="yes"
@@ -30,8 +30,11 @@ services:
     image: $SAKAI_IMAGE
     volumes:
       - base:/usr/local/tomcat-base
+      - db:/docker-entrypoint-initdb.d
     links:
       - database
 volumes:
   base:
+    driver: local
+  db:
     driver: local
