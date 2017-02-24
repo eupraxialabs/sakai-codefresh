@@ -6,7 +6,7 @@ steps:
       type: git-clone
       title: Sakai Clone Repository
       description: Clone the specific sakai repo you want to test
-      repo: https://github.com/${{REPO_OWNER}}/sakai.git
+      repo: https://github.com/${{REPO_OWNER}}/${{REPO_NAME}}.git
       revision: ${{REPO_REVISION}}
       when:
        condition:
