@@ -16,7 +16,7 @@ steps:
     binary_release:
       title: Download Sakai Binary Release
       description: Download some binary Sakai release to test it without build from source
-      image: ubuntu:14.04
+      image: alpine:latest
       working_directory: ${{main_clone}}
       commands:
         - wget -O https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war
