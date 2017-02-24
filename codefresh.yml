@@ -20,6 +20,7 @@ steps:
       working_directory: ${{main_clone}}
       commands:
         - mkdir -p ./tomcat/target/webapps
+        - mkdir -p ./tomcat/target/components
         - wget -O ./tomcat/target/webapps/portal.war https://tomcat.apache.org/tomcat-8.0-doc/appdev/sample/sample.war --no-check-certificate
         #- cp sample.war ${{main_clone}}/tomcat/target/
         #- wget -O http://source.sakaiproject.org/release/${{BINARY_RELEASE}}/artifacts/sakai-bin-${{BINARY_RELEASE}}.tar.gz
@@ -57,10 +58,6 @@ steps:
        - mvn -f wait -P${{SAKAI_DATABASE}} clean install
        - mkdir -p ${{main_clone}}/tomcat/target/lib/
        - cp wait/target/*.jar ${{main_clone}}/tomcat/target/lib/
-      when:
-       condition:
-        all:
-         notMariaDbDatabase: '"${{SAKAI_DATABASE}}" != "mariadb"'
 	   
     build_code:
       title: Build Sakai Code Skiping Tests
