@@ -17,11 +17,13 @@ steps:
       title: Download Sakai Binary Release
       description: Download some binary Sakai release to test it without build from source
       image: alpine:latest
-      working_directory: ${{main_clone}}
+      #working_directory: ${{main_clone}}
       commands:
-        - wget -O https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war
-        - mkdir -p ${{main_clone}}/tomcat/target
-        - cp sample.war ${{main_clone}}/tomcat/target/
+        - pwd
+        - ls -la
+        #- wget -O https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war
+        #- mkdir -p ${{main_clone}}/tomcat/target
+        #- cp sample.war ${{main_clone}}/tomcat/target/
         #- wget -O http://source.sakaiproject.org/release/${{BINARY_RELEASE}}/artifacts/sakai-bin-${{BINARY_RELEASE}}.tar.gz
         #- tar xzvC ${{main_clone}}/tomcat/target -f sakai-bin-${{BINARY_RELEASE}}.tar.gz
       when:
@@ -129,4 +131,4 @@ steps:
       when:
        condition:
         all:
-         oracleDatabase: '"${{PIPELINE_SKIP}}" == "oracle"'
+         oracleDatabase: '"${{SAKAI_DATABASE}}" == "oracle"'
