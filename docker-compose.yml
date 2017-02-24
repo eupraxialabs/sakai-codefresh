@@ -1,0 +1,35 @@
+version: '2'
+services:
+  database:
+    image: ${DATABASE_IMAGE}
+    ports:
+      - ${DATABASE_PORT}
+    environment:
+      - MYSQL_ROOT_PASSWORD= 
+      - MYSQL_ALLOW_EMPTY_PASSWORD="yes"
+      - MYSQL_USER=sakai
+      - MYSQL_PASSWORD=sakai
+      - MYSQL_DATABASE=sakai
+    command:
+      - ${DATABASE_COMMAND}
+  tomcat:
+    image: tomcat:8.0.41-jre8
+    ports:
+      - 8080
+    links:
+      - app
+    volumes_from:
+      - app
+    environment:
+      - CATALINA_OPTS_EXTRA=-Dsakai.demo=true
+      - CATALINA_BASE=/usr/local/tomcat-base
+    command: ["/usr/local/tomcat-base/bin/wait-before.sh", "catalina.sh", "run"]      
+  app:
+    image: juanjmerono/sakai:codefresh
+    volumes:
+      - base:/usr/local/tomcat-base
+    links:
+      - database
+volumes:
+  base:
+    driver: local

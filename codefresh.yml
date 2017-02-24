@@ -1,0 +1,126 @@
+version: '1.0'
+
+steps:
+
+    sakai_clone:
+      type: git-clone
+      title: Sakai Clone Repository
+      description: Clone the specific sakai repo you want to test
+      repo: https://github.com/${{REPO_OWNER}}/sakai.git
+      revision: ${{REPO_REVISION}}
+      when:
+       condition:
+        all:
+         notBinaryRelease: '"${{BINARY_RELEASE}}" == ""'
+      
+    binary_release:
+      title: Download Sakai Binary Release
+      description: Download some binary Sakai release to test it without build from source
+      image: ubuntu:14.04
+      working_directory: ${{main_clone}}
+      commands:
+        - wget http://source.sakaiproject.org/release/${{BINARY_RELEASE}}/artifacts/sakai-bin-${{BINARY_RELEASE}}.tar.gz
+        - tar xzvC /codefresh/volume/sakai/codefresh/target -f sakai-bin-${{BINARY_RELEASE}}.tar.gz
+      when:
+       condition:
+        all:
+         useBinaryRelease: '"${{BINARY_RELEASE}}" != ""'
+         
+    mvn_enc:
+      title: Encrypt Maven Settings For Oracle Download
+      description: Make necessary steps to be able to download jdbc driver from oracle maven repository
+      image: maven:3.2.3-jdk-8
+      working_directory: ${{main_clone}}
+      environment:
+       - MASTER_PASSWORD=${{MASTER_PASSWORD}}
+       - ORACLE_USER=${{ORACLE_USER}}
+       - ORACLE_PASS=${{ORACLE_PASS}}
+      commands:
+       - ./codefresh/maven/mvnsecurity.sh
+      when:
+       condition:
+        all:
+         existsMasterPassword: '"${{MASTER_PASSWORD}}" != ""'
+         oracleDatabase: '"${{SAKAI_DATABASE}}" == "oracle"'
+
+    build_wait:
+      title: Build Wait For Database Code
+      description: Create a small java program that test database availability
+      image: maven:latest
+      working_directory: ${{main_clone}}
+      environment:
+       - MAVEN_OPTS=-Dmaven.repo.local=/codefresh/volume/.m2/repository
+      commands:
+       - mvn -f codefresh/wait -P${{SAKAI_DATABASE}} clean install
+       - mkdir -p /codefresh/volume/sakai/codefresh/target/lib/
+       - cp codefresh/wait/target/*.jar /codefresh/volume/sakai/codefresh/target/lib/
+      when:
+       condition:
+        all:
+         notMariaDbDatabase: '"${{SAKAI_DATABASE}}" != "mariadb"'
+	   
+    build_code:
+      title: Build Sakai Code Skiping Tests
+      description: Classic Sakai build from code step without test execution
+      image: maven:latest
+      working_directory: ${{main_clone}}
+      environment:
+       - MAVEN_OPTS=-Dmaven.repo.local=/codefresh/volume/.m2/repository -Dmaven.tomcat.home=/codefresh/volume/sakai/codefresh/target
+      commands:
+       - cp ./codefresh/maven/settings.xml /root/.m2/settings.xml
+       - cp ./codefresh/maven/settings-security.xml /root/.m2/settings-security.xml
+       - rm -rf /codefresh/volume/sakai/codefresh/target
+       - mvn -DskipTests=true -P${{SAKAI_DATABASE}} clean install sakai:deploy
+      when:
+       condition:
+        all:
+         noSkipBuild: '"${{PIPELINE_SKIP}}" != "build"'
+         noSkipAll: '"${{PIPELINE_SKIP}}" != "all"'
+         notBinaryRelease: '"${{BINARY_RELEASE}}" == ""'
+       
+    build_image:
+      title: Building Docker Sakai Image
+      description: Build docker image with sakai binary code ready to run
+      type: build
+      working_directory: /codefresh/volume/sakai/codefresh/
+      dockerfile: Dockerfile
+      image_name: ${{REPO_OWNER}}/sakai
+      build_arguments:
+        - database=${{SAKAI_DATABASE}}
+      when:
+       condition:
+        all:
+         noSkipAll: '"${{PIPELINE_SKIP}}" != "all"'
+        
+    launch_mysql_composition:
+      title: Launch Sakai Server Composition MySQL
+      description: Run Sakai composition
+      type: launch-composition
+      composition: codefresh/docker-compose.yml
+      composition_variables:
+       - DATABASE_IMAGE=mysql:5.6.27
+       - DATABASE_PORT=3306
+       - DATABASE_COMMAND=--character-set-server=utf8
+      environment_name: '${{CF_REPO_NAME}}_${{CF_BRANCH}}'
+      entry_point: tomcat
+      when:
+       condition:
+        any:
+         mysqlDatabase: '"${{SAKAI_DATABASE}}" == "mysql"'
+         mariaDbDatabase: '"${{SAKAI_DATABASE}}" == "mariadb"'
+
+    launch_oracle_composition:
+      title: Launch Sakai Server Composition Oracle
+      description: Run Sakai composition
+      type: launch-composition
+      composition: codefresh/docker-compose.yml
+      composition_variables:
+       - DATABASE_IMAGE=yoanyo/oracle-xe-11g
+       - DATABASE_PORT=1521
+       - DATABASE_COMMAND=--character-set-server=utf8
+      environment_name: '${{CF_REPO_NAME}}_${{CF_BRANCH}}'
+      entry_point: tomcat
+      when:
+       condition:
+        all:
+         oracleDatabase: '"${{PIPELINE_SKIP}}" == "oracle"'
