@@ -138,8 +138,8 @@ steps:
       composition_variables:
        - DATABASE_IMAGE=sath89/${{ORACLE_VERSION}}
        - DATABASE_PORT=1521
-       - DATABASE_KEY=#
-       - DATABASE_VALUE=\./entrypoint.sh
+       - DATABASE_KEY=./entrypoint.sh #
+       - DATABASE_VALUE=
        - SAKAI_IMAGE=${{REPO_OWNER}}/${{REPO_NAME}}:${{REPO_REVISION}}
       environment_name: '${{CF_REPO_NAME}}_${{CF_BRANCH}}'
       entry_point: tomcat
