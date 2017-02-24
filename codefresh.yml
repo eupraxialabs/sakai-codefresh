@@ -19,16 +19,28 @@ steps:
       image: arkban/alpine-aws-wget:latest
       working_directory: ${{main_clone}}
       commands:
-        - mkdir -p ./tomcat/target/webapps
-        - mkdir -p ./tomcat/target/components
-        - wget -O ./tomcat/target/webapps/portal.war https://tomcat.apache.org/tomcat-8.0-doc/appdev/sample/sample.war --no-check-certificate
-        #- cp sample.war ${{main_clone}}/tomcat/target/
-        #- wget -O http://source.sakaiproject.org/release/${{BINARY_RELEASE}}/artifacts/sakai-bin-${{BINARY_RELEASE}}.tar.gz
-        #- tar xzvC ${{main_clone}}/tomcat/target -f sakai-bin-${{BINARY_RELEASE}}.tar.gz
+        - mkdir -p ./binaries
+        - wget -O ./binaries/sakai.tgz http://source.sakaiproject.org/release/${{BINARY_RELEASE}}/artifacts/sakai-bin-${{BINARY_RELEASE}}.tar.gz  --no-check-certificate
+        - tar xzvC ./tomcat/target -f sakai.tgz
       when:
        condition:
         all:
          useBinaryRelease: '"${{BINARY_RELEASE}}" != ""'
+         notDemoBinaryRelease: '"${{BINARY_RELEASE}}" != "demo"'
+
+    binary_demo_release:
+      title: Download Demo Binary Release
+      description: Download some binary demo release to test it without build from source
+      image: arkban/alpine-aws-wget:latest
+      working_directory: ${{main_clone}}
+      commands:
+        - mkdir -p ./tomcat/target/webapps
+        - mkdir -p ./tomcat/target/components
+        - wget -O ./tomcat/target/webapps/portal.war https://tomcat.apache.org/tomcat-8.0-doc/appdev/sample/sample.war --no-check-certificate
+      when:
+       condition:
+        all:
+         useBinaryRelease: '"${{BINARY_RELEASE}}" == "demo"'
          
     mvn_enc:
       title: Encrypt Maven Settings For Oracle Download
@@ -88,6 +100,9 @@ steps:
       tag: ${{REPO_REVISION}}
       build_arguments:
         - database=${{SAKAI_DATABASE}}
+      metadata:
+        set:
+          - database: ${{SAKAI_DATABASE}}
       when:
        condition:
         all:
