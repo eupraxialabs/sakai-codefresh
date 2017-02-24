@@ -67,6 +67,8 @@ steps:
       environment:
        - MAVEN_OPTS=-Dmaven.repo.local=/codefresh/volume/.m2/repository
       commands:
+       - cp ./maven/settings.xml /root/.m2/settings.xml
+       - cp ./maven/settings-security.xml /root/.m2/settings-security.xml
        - mvn -f wait -P${{SAKAI_DATABASE}} clean install
        - mkdir -p tomcat/target/lib/
        - cp wait/target/*.jar tomcat/target/lib/
