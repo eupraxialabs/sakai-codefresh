@@ -28,7 +28,7 @@ public class WaitDB {
 	}
 	
 	public static void main(String[] args) {
-		int seconds = 1;
+		int loops = 1;
 		int timeout = 10;
 		Properties prop = new Properties();
 		try {
@@ -40,8 +40,8 @@ public class WaitDB {
 			String dbPass = prop.getProperty("password@javax.sql.BaseDataSource");
 			do {
 				Thread.sleep(timeout*1000);
-				System.out.println("Testing db alive... after waiting "+(timeout*seconds++)+" seconds.");
-			} while (!getConnection(dbUrl,dbUser,dbPass));
+				System.out.println("Testing db alive... after waiting "+(timeout*loops++)+" seconds.");
+			} while (!getConnection(dbUrl,dbUser,dbPass) && loops < 180); // Max wait for 30 mins
 		} catch (Exception exx) {
 			System.err.println("Error loading db properties: "+exx.getMessage());
 		}
