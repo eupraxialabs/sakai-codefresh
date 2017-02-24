@@ -11,7 +11,7 @@ services:
       - MYSQL_PASSWORD=sakai
       - MYSQL_DATABASE=sakai
     command:
-      - --character-set-server=utf8
+      - $$DATABASE_COMMAND
   tomcat:
     image: tomcat:8.0.41-jre8
     ports:
