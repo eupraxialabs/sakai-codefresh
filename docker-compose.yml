@@ -19,7 +19,7 @@ services:
     ports:
       - 8080
     links:
-      - sakai
+      - database
     volumes_from:
       - sakai
     environment:
@@ -31,8 +31,6 @@ services:
     volumes:
       - base:/usr/local/tomcat-base
       - db:/docker-entrypoint-initdb.d
-    links:
-      - database
 volumes:
   base:
     driver: local
