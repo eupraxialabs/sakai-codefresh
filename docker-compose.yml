@@ -13,7 +13,7 @@ services:
       - MYSQL_PASSWORD=sakai
       - MYSQL_DATABASE=sakai
     command:
-      - $DATABASE_KEY$DATABASE_EQ$DATABASE_VALUE
+      - $DATABASE_COMMAND
   tomcat:
     image: tomcat:8.0.41-jre8
     ports:
