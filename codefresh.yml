@@ -102,7 +102,7 @@ steps:
        - DATABASE_IMAGE=mysql:5.6.27
        - DATABASE_PORT=3306
        - DATABASE_COMMAND=--character-set-server=utf8
-       - SAKAI_IMAGE=${{REPO_OWNER}}/${{REPO_NAME}}:${{REPO_REVISION}}
+       - SAKAI_IMAGE=${{build_image}}
       environment_name: '${{CF_REPO_NAME}}_${{CF_BRANCH}}'
       entry_point: tomcat
       when:
@@ -120,7 +120,7 @@ steps:
        - DATABASE_IMAGE=yoanyo/oracle-xe-11g
        - DATABASE_PORT=1521
        - DATABASE_COMMAND=--character-set-server=utf8
-       - SAKAI_IMAGE=${{REPO_OWNER}}/${{REPO_NAME}}:${{REPO_REVISION}}
+       - SAKAI_IMAGE=${{build_image}}
       environment_name: '${{CF_REPO_NAME}}_${{CF_BRANCH}}'
       entry_point: tomcat
       when:

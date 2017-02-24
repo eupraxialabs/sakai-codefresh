@@ -1,9 +1,9 @@
 version: '2'
 services:
   database:
-    image: ${DATABASE_IMAGE}
+    image: $DATABASE_IMAGE
     ports:
-      - ${DATABASE_PORT}
+      - $DATABASE_PORT
     environment:
       - MYSQL_ROOT_PASSWORD= 
       - MYSQL_ALLOW_EMPTY_PASSWORD="yes"
@@ -11,7 +11,7 @@ services:
       - MYSQL_PASSWORD=sakai
       - MYSQL_DATABASE=sakai
     command:
-      - ${DATABASE_COMMAND}
+      - $DATABASE_COMMAND
   tomcat:
     image: tomcat:8.0.41-jre8
     ports:
@@ -25,7 +25,7 @@ services:
       - CATALINA_BASE=/usr/local/tomcat-base
     command: ["/usr/local/tomcat-base/bin/wait-before.sh", "catalina.sh", "run"]      
   sakai:
-    image: ${SAKAI_IMAGE}
+    image: $SAKAI_IMAGE
     volumes:
       - base:/usr/local/tomcat-base
     links:
