@@ -55,7 +55,7 @@ steps:
       environment:
        - MAVEN_OPTS=-Dmaven.repo.local=/codefresh/volume/.m2/repository
       commands:
-       - mvn -f wait -P${{SAKAI_DATABASE}} clean install
+       - mvn -f wait clean install
        - mkdir -p ${{main_clone}}/tomcat/target/lib/
        - cp wait/target/*.jar ${{main_clone}}/tomcat/target/lib/
 	   
