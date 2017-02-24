@@ -9,9 +9,6 @@
   <profiles>
   	<profile>
   		<id>mariadb</id>
-  		<activation>
-  			<activeByDefault>true</activeByDefault>
-  		</activation>
 		<build>
 		  <plugins>
 		    <plugin>
