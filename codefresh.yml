@@ -55,9 +55,9 @@ steps:
       environment:
        - MAVEN_OPTS=-Dmaven.repo.local=/codefresh/volume/.m2/repository
       commands:
-       - mvn -f wait clean install
-       - mkdir -p ${{main_clone}}/tomcat/target/lib/
-       - cp wait/target/*.jar ${{main_clone}}/tomcat/target/lib/
+       - mvn -f wait -P${{SAKAI_DATABASE}} clean install
+       - mkdir -p tomcat/target/lib/
+       - cp wait/target/*.jar tomcat/target/lib/
 	   
     build_code:
       title: Build Sakai Code Skiping Tests
