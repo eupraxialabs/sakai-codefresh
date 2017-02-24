@@ -17,15 +17,15 @@ services:
     ports:
       - 8080
     links:
-      - app
+      - sakai
     volumes_from:
-      - app
+      - sakai
     environment:
       - CATALINA_OPTS_EXTRA=-Dsakai.demo=true
       - CATALINA_BASE=/usr/local/tomcat-base
     command: ["/usr/local/tomcat-base/bin/wait-before.sh", "catalina.sh", "run"]      
-  app:
-    image: juanjmerono/sakai:codefresh
+  sakai:
+    image: ${SAKAI_IMAGE}
     volumes:
       - base:/usr/local/tomcat-base
     links:
