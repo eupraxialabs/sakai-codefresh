@@ -94,8 +94,8 @@ steps:
       commands:
        - cp ./maven/settings.xml /root/.m2/settings.xml
        - cp ./maven/settings-security.xml /root/.m2/settings-security.xml
-       - rm -rf ${{main_clone}}/tomcat/target
-       - mvn -DskipTests=true -P${{SAKAI_DB_DRIVER}} clean install sakai:deploy
+       - rm -rf ./tomcat/target
+       - mvn -f sakai -DskipTests=true -P${{SAKAI_DB_DRIVER}} clean install sakai:deploy
       when:
        condition:
         all:
