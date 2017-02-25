@@ -12,6 +12,7 @@ steps:
        condition:
         all:
          notBinaryRelease: '"${{BINARY_RELEASE}}" == ""'
+         notSakaiExperimental: '"${{SAKAI_BASE_TAG}}" == ""'
       
     binary_release:
       title: Download Sakai Binary Release
@@ -60,7 +61,8 @@ steps:
        condition:
         all:
          existsMasterPassword: '"${{MASTER_PASSWORD}}" != ""'
-         oracleDatabase: '"${{SAKAI_DATABASE}}" == "oracle"'
+         oracleDatabase: '"${{SAKAI_DB_DRIVER}}" == "oracle"'
+         notSakaiExperimental: '"${{SAKAI_BASE_TAG}}" == ""'
 
     build_wait:
       title: Build Wait For Database Code
@@ -72,9 +74,13 @@ steps:
       commands:
        - cp ./maven/settings.xml /root/.m2/settings.xml
        - cp ./maven/settings-security.xml /root/.m2/settings-security.xml
-       - mvn -f wait -P${{SAKAI_DATABASE}} clean install
+       - mvn -f wait -P${{SAKAI_DB_DRIVER}} clean install
        - mkdir -p tomcat/target/lib/
        - cp wait/target/*.jar tomcat/target/lib/
+      when:
+       condition:
+        all:
+         notSakaiExperimental: '"${{SAKAI_BASE_TAG}}" == ""'
 	   
     build_code:
       title: Build Sakai Code Skiping Tests
@@ -87,30 +93,40 @@ steps:
        - cp ./maven/settings.xml /root/.m2/settings.xml
        - cp ./maven/settings-security.xml /root/.m2/settings-security.xml
        - rm -rf ${{main_clone}}/tomcat/target
-       - mvn -DskipTests=true -P${{SAKAI_DATABASE}} clean install sakai:deploy
+       - mvn -DskipTests=true -P${{SAKAI_DB_DRIVER}} clean install sakai:deploy
       when:
        condition:
         all:
-         noSkipBuild: '"${{PIPELINE_SKIP}}" != "build"'
-         noSkipAll: '"${{PIPELINE_SKIP}}" != "all"'
          notBinaryRelease: '"${{BINARY_RELEASE}}" == ""'
+         notSakaiExperimental: '"${{SAKAI_BASE_TAG}}" == ""'
        
+    build_dockerfile:
+      title: Build Dockerfile
+      description: Create dockerfile to build Sakai image
+      image: arkban/alpine-aws-wget:latest
+      working_directory: ${{main_clone}}
+      commands:
+        - echo 'FROM ${{TOMCAT_IMAGE}}' > ./tomcat/Dockerfile
+        - echo '' >> ./tomcat/Dockerfile
+        - cat ./tomcat/dockerfile_base >> ./tomcat/Dockerfile
+
     build_database_image:
       title: Building Database Image For Oracle
       description: Build the database image in case you want to use Oracle
       type: build
       working_directory: ${{main_clone}}/oracle/
-      dockerfile: ${{ORACLE_VERSION}}
-      image_name: sakaiproject/oracle
-      tag: ${{ORACLE_VERSION}}
+      dockerfile: ${{DB_VERSION}}
+      image_name: ${{DB_IMAGE}}
+      tag: ${{DB_VERSION}}
       metadata:
         set:
-          - database: ${{SAKAI_DATABASE}}
-          - oracle_version: ${{ORACLE_VERSION}}
+          - database: ${{DB_IMAGE}}
+          - version: ${{DB_VERSION}}
       when:
        condition:
         all:
-         oracleDatabase: '"${{SAKAI_DATABASE}}" == "oracle"'
+         oracleDatabase: '"${{SAKAI_DB_DRIVER}}" == "oracle"'
+         notSakaiExperimental: '"${{SAKAI_BASE_TAG}}" == ""'
 
     build_image:
       title: Building Docker Sakai Image
@@ -119,50 +135,22 @@ steps:
       working_directory: ${{main_clone}}/tomcat/
       dockerfile: Dockerfile
       image_name: ${{REPO_OWNER}}/${{REPO_NAME}}
-      tag: ${{REPO_REVISION}}${{BINARY_RELEASE}}
+      tag: ${{SAKAI_TAG}}
       metadata:
         set:
           - binary_release: ${{BINARY_RELEASE}}
           - repo: ${{REPO_OWNER}}/${{REPO_NAME}}
           - revision: ${{REPO_REVISION}}
-      when:
-       condition:
-        all:
-         noSkipAll: '"${{PIPELINE_SKIP}}" != "all"'
+          - tag: ${{SAKAI_TAG}}
         
-    launch_mysql_composition:
-      title: Launch Sakai Server Composition MySQL/MariaDB
+    launch_sakai_composition:
+      title: Launch Sakai Server Composition
       description: Run Sakai composition
       type: launch-composition
       composition: docker-compose.yml
       composition_variables:
-       - DATABASE_TYPE=${{SAKAI_DATABASE}}
-       - DATABASE_IMAGE=${{MYSQL_VERSION}}
-       - DATABASE_PORT=3306
-       - DATABASE_COMMAND=-C utf8
-       - SAKAI_IMAGE=${{REPO_OWNER}}/${{REPO_NAME}}:${{REPO_REVISION}}${{BINARY_RELEASE}}
+       - DATABASE_TYPE=${{SAKAI_DB_DRIVER}}
+       - DATABASE_IMAGE=${{DB_IMAGE}}:${{DB_VERSION}}
+       - SAKAI_IMAGE=${{REPO_OWNER}}/${{REPO_NAME}}:${{SAKAI_TAG}}
       environment_name: '${{CF_REPO_NAME}}_${{CF_BRANCH}}'
       entry_point: sakai
-      when:
-       condition:
-        any:
-         mysqlDatabase: '"${{SAKAI_DATABASE}}" == "mysql"'
-         mariaDbDatabase: '"${{SAKAI_DATABASE}}" == "mariadb"'
-
-    launch_oracle_composition:
-      title: Launch Sakai Server Composition Oracle
-      description: Run Sakai composition
-      type: launch-composition
-      composition: docker-compose.yml
-      composition_variables:
-       - DATABASE_TYPE=${{SAKAI_DATABASE}}
-       - DATABASE_IMAGE=sakaiproject/oracle:${{ORACLE_VERSION}}
-       - DATABASE_PORT=1521
-       - DATABASE_COMMAND=./entrypoint.sh
-       - SAKAI_IMAGE=${{REPO_OWNER}}/${{REPO_NAME}}:${{REPO_REVISION}}${{BINARY_RELEASE}}
-      environment_name: '${{CF_REPO_NAME}}_${{CF_BRANCH}}'
-      entry_point: sakai
-      when:
-       condition:
-        all:
-         oracleDatabase: '"${{SAKAI_DATABASE}}" == "oracle"'

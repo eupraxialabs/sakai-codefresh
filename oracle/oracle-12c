@@ -1,3 +1,6 @@
 # Dockerfile
 FROM sath89/oracle-12c
 ADD init.sql /docker-entrypoint-initdb.d/
+ADD entrypoint_orcl.sh /entrypoint_orcl.sh
+ENTRYPOINT ["/entrypoint_orcl.sh"]
+CMD [""]
