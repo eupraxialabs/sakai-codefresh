@@ -19,17 +19,11 @@ steps:
       image: arkban/alpine-aws-wget:latest
       working_directory: ${{main_clone}}
       commands:
-        - echo "rm -rf ./tomcat/target"
         - rm -rf ./tomcat/target
-        - echo "mkdir -p ./tomcat/target"
         - mkdir -p ./tomcat/target
-        - echo "mkdir -p ./binaries"
         - mkdir -p ./binaries
-        - echo "test -f ./binaries/sakai.tgz && mv ./binaries/sakai.tgz ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz"
-        - test -f ./binaries/sakai.tgz && mv ./binaries/sakai.tgz ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz
-        - echo "test ! -f ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz && wget -O ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz http://source.sakaiproject.org/release/${{BINARY_RELEASE}}/artifacts/sakai-bin-${{BINARY_RELEASE}}.tar.gz  --no-check-certificate"
-        - test ! -f ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz && wget -O ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz http://source.sakaiproject.org/release/${{BINARY_RELEASE}}/artifacts/sakai-bin-${{BINARY_RELEASE}}.tar.gz  --no-check-certificate
-        - echo "tar xzvC ./tomcat/target -f ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz"
+        - test -f ./binaries/sakai.tgz && mv ./binaries/sakai.tgz ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz ; echo "File not exists."
+        - test ! -f ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz && wget -O ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz http://source.sakaiproject.org/release/${{BINARY_RELEASE}}/artifacts/sakai-bin-${{BINARY_RELEASE}}.tar.gz  --no-check-certificate ; echo "File already exists."
         - tar xzvC ./tomcat/target -f ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz
         - echo 7
       when:
