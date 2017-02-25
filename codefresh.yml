@@ -120,8 +120,6 @@ steps:
       dockerfile: Dockerfile
       image_name: ${{REPO_OWNER}}/${{REPO_NAME}}
       tag: ${{REPO_REVISION}}${{BINARY_RELEASE}}
-      build_arguments:
-        - database=${{SAKAI_DATABASE}}
       metadata:
         set:
           - binary_release: ${{BINARY_RELEASE}}
