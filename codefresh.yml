@@ -48,6 +48,19 @@ steps:
          useBinaryRelease: '"${{BINARY_RELEASE}}" == "demo"'
          notSakaiExperimental: 'includes("${{SAKAI_BASE_TAG}}", "$") == true'
     
+    clean_tomcat:
+      title: Download Demo Binary Release
+      description: Download some binary demo release to test it without build from source
+      image: arkban/alpine-aws-wget:latest
+      working_directory: ${{main_clone}}
+      commands:
+        - rm -rf ./tomcat/target
+      when:
+       condition:
+        all:
+         notBinaryRelease: 'includes("${{BINARY_RELEASE}}", "$") == true'
+         notSakaiExperimental: 'includes("${{SAKAI_BASE_TAG}}", "$") == true'
+    
     mvn_enc:
       title: Encrypt Maven Settings For Oracle Download
       description: Make necessary steps to be able to download jdbc driver from oracle maven repository
@@ -77,7 +90,7 @@ steps:
        - cp ./maven/settings.xml /root/.m2/settings.xml
        - cp ./maven/settings-security.xml /root/.m2/settings-security.xml
        - mvn -f wait -P${{SAKAI_DB_DRIVER}} clean install
-       - mkdir -p tomcat/target/lib/
+       - mkdir -p ./tomcat/target/lib/
        - cp wait/target/*.jar tomcat/target/lib/
       when:
        condition:
@@ -88,14 +101,11 @@ steps:
       title: Build Sakai Code Skiping Tests
       description: Classic Sakai build from code step without test execution
       image: maven:latest
-      working_directory: ${{main_clone}}
+      working_directory: ${{sakai_clone}}
       environment:
        - MAVEN_OPTS=-Dmaven.repo.local=/codefresh/volume/.m2/repository -Dmaven.tomcat.home=${{main_clone}}/tomcat/target
       commands:
-       - cp ./maven/settings.xml /root/.m2/settings.xml
-       - cp ./maven/settings-security.xml /root/.m2/settings-security.xml
-       - rm -rf ./tomcat/target
-       - mvn -f sakai -DskipTests=true -P${{SAKAI_DB_DRIVER}} clean install sakai:deploy
+       - mvn -DskipTests=true clean install sakai:deploy
       when:
        condition:
         all:
