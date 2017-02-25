@@ -103,7 +103,7 @@ steps:
       image: maven:latest
       working_directory: ${{sakai_clone}}
       environment:
-       - MAVEN_OPTS=-Dmaven.repo.local=/codefresh/volume/.m2/repository -Dmaven.tomcat.home=${{main_clone}}/tomcat/target
+       - MAVEN_OPTS=-Dmaven.repo.local=/codefresh/volume/.m2/repository -Dmaven.tomcat.home=/codefresh/volume/sakai-codefresh/tomcat/target
       commands:
        - mvn -DskipTests=true clean install sakai:deploy
       when:
