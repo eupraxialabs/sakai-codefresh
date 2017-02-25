@@ -103,16 +103,10 @@ steps:
       dockerfile: ${{ORACLE_VERSION}}
       image_name: sakaiproject/oracle
       tag: ${{ORACLE_VERSION}}
-      build_arguments:
-        - database=${{SAKAI_DATABASE}}
       metadata:
         set:
           - database: ${{SAKAI_DATABASE}}
           - oracle_version: ${{ORACLE_VERSION}}
-          - mysql_version: ${{MYSQL_VERSION}}
-          - binary_release: ${{BINARY_RELEASE}}
-          - repo: ${{REPO_OWNER}}/${{REPO_NAME}}
-          - revision: ${{REPO_REVISION}}
       when:
        condition:
         all:
