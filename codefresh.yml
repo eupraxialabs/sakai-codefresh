@@ -12,7 +12,7 @@ steps:
        condition:
         all:
          notBinaryRelease: '"${{BINARY_RELEASE}}" == ""'
-         notSakaiExperimental: '"${{SAKAI_BASE_TAG}}" == ""'
+         notSakaiExperimental: 'Variable("SAKAI_BASE_TAG") == ""'
       
     binary_release:
       title: Download Sakai Binary Release
@@ -40,6 +40,7 @@ steps:
         - rm -rf ./tomcat/target
         - mkdir -p ./tomcat/target/webapps
         - mkdir -p ./tomcat/target/components
+        - mkdir -p ./tomcat/target/lib
         - wget -O ./tomcat/target/webapps/portal.war https://tomcat.apache.org/tomcat-8.0-doc/appdev/sample/sample.war --no-check-certificate
       when:
        condition:
