@@ -1,3 +1,4 @@
 /.project
+/tomcat/Dockerfile
 target
 binaries
