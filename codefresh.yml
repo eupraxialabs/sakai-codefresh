@@ -19,12 +19,19 @@ steps:
       image: arkban/alpine-aws-wget:latest
       working_directory: ${{main_clone}}
       commands:
+        - echo 1
         - rm -rf ./tomcat/target
+        - echo 2
         - mkdir -p ./tomcat/target
+        - echo 3
         - mkdir -p ./binaries
+        - echo 4
         - test -f ./binaries/sakai.tgz && mv ./binaries/sakai.tgz ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz
+        - echo 5
         - test ! -f ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz && wget -O ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz http://source.sakaiproject.org/release/${{BINARY_RELEASE}}/artifacts/sakai-bin-${{BINARY_RELEASE}}.tar.gz  --no-check-certificate
+        - echo 6
         - tar xzvC ./tomcat/target -f ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz
+        - echo 7
       when:
        condition:
         all:
