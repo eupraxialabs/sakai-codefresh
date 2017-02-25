@@ -33,7 +33,7 @@ public class WaitDB {
 		int timeout = 10;
 		Properties prop = new Properties();
 		try {
-			prop.load(new FileInputStream("/usr/local/tomcat-base/sakai/local.properties"));
+			prop.load(new FileInputStream("/usr/local/tomcat-base/security-"+args[0]+"/security.properties"));
 			String driverName = prop.getProperty("driverClassName@javax.sql.BaseDataSource");
 			Class.forName(driverName);
 			String dbUrl = prop.getProperty("url@javax.sql.BaseDataSource");
@@ -41,7 +41,7 @@ public class WaitDB {
 			String dbPass = prop.getProperty("password@javax.sql.BaseDataSource");
 			do {
 				Thread.sleep(timeout*1000);
-				System.out.println("Testing "+dbUrl+" alive... after waiting "+(timeout*loops++)+" seconds.");
+				System.out.println("Testing "+args[0]+" alive... after waiting "+(timeout*loops++)+" seconds.");
 			} while (!getConnection(dbUrl,dbUser,dbPass) && loops < 180); // Max wait for 30 mins
 		} catch (Exception exx) {
 			System.err.println("Error loading db properties: "+exx.getMessage());

@@ -124,9 +124,6 @@ steps:
         - database=${{SAKAI_DATABASE}}
       metadata:
         set:
-          - database: ${{SAKAI_DATABASE}}
-          - oracle_version: ${{ORACLE_VERSION}}
-          - mysql_version: ${{MYSQL_VERSION}}
           - binary_release: ${{BINARY_RELEASE}}
           - repo: ${{REPO_OWNER}}/${{REPO_NAME}}
           - revision: ${{REPO_REVISION}}
@@ -141,6 +138,7 @@ steps:
       type: launch-composition
       composition: docker-compose.yml
       composition_variables:
+       - DATABASE_TYPE=${{SAKAI_DATABASE}}
        - DATABASE_IMAGE=${{MYSQL_VERSION}}
        - DATABASE_PORT=3306
        - DATABASE_COMMAND=-C utf8
@@ -159,6 +157,7 @@ steps:
       type: launch-composition
       composition: docker-compose.yml
       composition_variables:
+       - DATABASE_TYPE=${{SAKAI_DATABASE}}
        - DATABASE_IMAGE=sakaiproject/oracle:${{ORACLE_VERSION}}
        - DATABASE_PORT=1521
        - DATABASE_COMMAND=./entrypoint.sh
