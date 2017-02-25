@@ -112,12 +112,12 @@ steps:
          noSkipAll: '"${{PIPELINE_SKIP}}" != "all"'
         
     launch_mysql_composition:
-      title: Launch Sakai Server Composition MySQL
+      title: Launch Sakai Server Composition MySQL/MariaDB
       description: Run Sakai composition
       type: launch-composition
       composition: docker-compose.yml
       composition_variables:
-       - DATABASE_IMAGE=mysql:${{MYSQL_VERSION}}
+       - DATABASE_IMAGE=${{MYSQL_VERSION}}
        - DATABASE_PORT=3306
        - DATABASE_COMMAND=-C utf8
        - SAKAI_IMAGE=${{REPO_OWNER}}/${{REPO_NAME}}:${{REPO_REVISION}}
