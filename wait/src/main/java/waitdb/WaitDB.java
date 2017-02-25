@@ -17,6 +17,7 @@ public class WaitDB {
 		    conn = DriverManager.getConnection(jdbcUrl,connectionProps);
 		    return (conn!=null);
 	    } catch (SQLException sqle) {
+	    	System.out.println("Not ready: "+sqle.getMessage());
 	    	return false;
 	    } finally {
 	    	try {
@@ -40,7 +41,7 @@ public class WaitDB {
 			String dbPass = prop.getProperty("password@javax.sql.BaseDataSource");
 			do {
 				Thread.sleep(timeout*1000);
-				System.out.println("Testing db alive... after waiting "+(timeout*loops++)+" seconds.");
+				System.out.println("Testing "+dbUrl+" alive... after waiting "+(timeout*loops++)+" seconds.");
 			} while (!getConnection(dbUrl,dbUser,dbPass) && loops < 180); // Max wait for 30 mins
 		} catch (Exception exx) {
 			System.err.println("Error loading db properties: "+exx.getMessage());
