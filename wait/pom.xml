@@ -118,5 +118,64 @@
 		  </plugins>
   		</build>
   	</profile>
+  	<profile>
+  		<id>all</id>
+		<repositories>
+		  <repository>
+		    <id>maven.oracle.com</id>
+		    <name>oracle-maven-repo</name>
+		    <url>https://maven.oracle.com</url>
+		    <layout>default</layout>
+		    <releases>
+		      <enabled>true</enabled>
+		      <updatePolicy>always</updatePolicy>
+		    </releases>
+		  </repository>
+		</repositories>
+		<build>
+		  <plugins>
+		    <plugin>
+		      <groupId>org.apache.maven.plugins</groupId>
+		      <artifactId>maven-dependency-plugin</artifactId>
+		      <version>3.0.0</version>
+		      <executions>
+		        <execution>
+		          <id>copy</id>
+		          <phase>package</phase>
+		          <goals>
+		            <goal>copy</goal>
+		          </goals>
+		          <configuration>
+		            <artifactItems>
+		              <artifactItem>
+						<groupId>org.mariadb.jdbc</groupId>
+						<artifactId>mariadb-java-client</artifactId>
+						<version>1.5.8</version>
+		                <type>jar</type>
+		                <outputDirectory>target</outputDirectory>
+		              </artifactItem>
+		              <artifactItem>
+		          		<groupId>mysql</groupId>
+		          		<artifactId>mysql-connector-java</artifactId>
+		                <version>5.1.40</version>
+		                <type>jar</type>
+		                <outputDirectory>target</outputDirectory>
+		              </artifactItem>
+		              <artifactItem>
+		          		<groupId>com.oracle.jdbc</groupId>
+		          		<artifactId>ojdbc7</artifactId>
+		                <version>12.1.0.2</version>
+		                <type>jar</type>
+		                <outputDirectory>target</outputDirectory>
+		              </artifactItem>
+		            </artifactItems>
+		            <!-- other configurations here -->
+		          </configuration>
+		        </execution>
+		      </executions>
+		    </plugin>
+		  </plugins>
+		</build>
+	</profile>
   </profiles>
 </project>

@@ -41,7 +41,7 @@ You can build many different sakai images ready to run at any moment. You just h
 	* REPO_NAME=sakai
 	* REPO_REVISION=branch,hash_value,...
 	* TOMCAT_IMAGE=tomcat:8.0.41-jre8,... // Choose tomcat docker image you want to use
-	* SAKAI_DB_DRIVER=mariadb,mysql,oracle //Choose the database driver you want to use in your environment
+	* SAKAI_DB_DRIVER=mariadb,mysql,oracle,all //Choose the database driver you want to add in the image (all will let you use the image with any database later)
 	* BINARY_RELEASE=11.3,... // Choose a release and don't build the code just test binary releases (fast)
 	* DB_IMAGE=mysql,mariadb,sakaiproject/oracle // Choose the database docker image
 	* DB_VERSION=5.6.27,5.5.54,oracle-xe-11g,oracle-12c
@@ -51,15 +51,18 @@ You can build many different sakai images ready to run at any moment. You just h
 
 The first thing you can do is trying a Sakai binary release, without building from code, just downloading from [Sakai](https://www.sakaiproject.org/download-sakai)
 
-* Steps to run Sakai 11.3 with mysql:
+* Steps to build Sakai 11.3 for any database:
 	* REPO_OWNER=sakaiproject
 	* REPO_NAME=sakai
 	* SAKAI_TAG=11.3
 	* TOMCAT_IMAGE=tomcat:8.0.41-jre8
-	* SAKAI_DB_DRIVER=mysql
 	* BINARY_RELEASE=11.3
-	* DB_IMAGE=mysql
-	* DB_VERSION=5.6.27
+	* SKIP_LAUNCH=true
+	* SAKAI_DB_DRIVER=all
+		* Use _mysql_ to avoid add oracle credentials.
+		* MASTER_PASSWORD=...
+		* ORACLE_USER=...
+		* ORACLE_PASS=...
 
 Build the image and test Sakai 11.3.
 
@@ -135,4 +138,5 @@ For example you can test some property in a previous 11.3 sakai build.
 		* PROPERTIES_FILE=local.properties - To add properties in this file
 		* SAKAI_TAG=11.3_experimental - Any name you want to use to tag the new image
 		* SKIP_LAUNCH=true - Do not run the image, just build it.
-
+	* You can create multiple pipelines to build different Sakai images.
+		* Create pipeline and set environment variables

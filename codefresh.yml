@@ -63,7 +63,7 @@ steps:
        condition:
         all:
          existsMasterPassword: 'includes("${{MASTER_PASSWORD}}", "$") == false'
-         oracleDatabase: '"${{SAKAI_DB_DRIVER}}" == "oracle"'
+         oracleDatabase: '"${{SAKAI_DB_DRIVER}}" == "oracle" || "${{SAKAI_DB_DRIVER}}" == "all"'
          notSakaiExperimental: 'includes("${{SAKAI_BASE_TAG}}", "$") == true'
 
     build_wait:
@@ -158,7 +158,7 @@ steps:
        condition:
         all:
          noSkipOracleBuild: '"${{SKIP_ORACLE_BUILD}}" != "true"'
-         oracleDatabase: '"${{SAKAI_DB_DRIVER}}" == "oracle"'
+         oracleDatabase: '("${{SAKAI_DB_DRIVER}}" == "oracle" || "${{SAKAI_DB_DRIVER}}" == "all") && (includes("${{DB_VERSION}}","oracle") == true)'
 
     build_image:
       title: Building Docker Sakai Image
@@ -178,6 +178,7 @@ steps:
           - base_image: '${{SAKAI_BASE_TAG}}'
           - experimental: '${{EXPERIMENTAL_PROPS}}'
           - properties: '${{PROPERTIES_FILE}}'
+          - driver: '${{SAKAI_DB_DRIVER}}'
         
     launch_sakai_composition:
       title: Launch Sakai Server Composition
