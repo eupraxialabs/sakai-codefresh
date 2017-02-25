@@ -22,7 +22,7 @@ steps:
         - rm -rf ./tomcat/target
         - mkdir -p ./binaries
         - wget -O ./binaries/sakai.tgz http://source.sakaiproject.org/release/${{BINARY_RELEASE}}/artifacts/sakai-bin-${{BINARY_RELEASE}}.tar.gz  --no-check-certificate
-        - tar xzvC ./tomcat/target -f sakai.tgz
+        - tar xzvC ./tomcat/target -f ./binaries/sakai.tgz
       when:
        condition:
         all:
