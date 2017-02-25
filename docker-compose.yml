@@ -4,8 +4,6 @@ services:
     image: $DATABASE_IMAGE
     ports:
       - $DATABASE_PORT
-    volumes_from:
-      - sakai
     environment:
       - MYSQL_ROOT_PASSWORD= 
       - MYSQL_ALLOW_EMPTY_PASSWORD="yes"
@@ -13,25 +11,13 @@ services:
       - MYSQL_PASSWORD=sakai
       - MYSQL_DATABASE=sakai
     command: $DATABASE_COMMAND
-  tomcat:
-    image: tomcat:8.0.41-jre8
+  sakai:
+    image: $SAKAI_IMAGE
     ports:
       - 8080
     links:
       - database
-    volumes_from:
-      - sakai
     environment:
       - CATALINA_OPTS_EXTRA=-Dsakai.demo=true
       - CATALINA_BASE=/usr/local/tomcat-base
     command: ["/usr/local/tomcat-base/bin/wait-before.sh", "catalina.sh", "run"]      
-  sakai:
-    image: $SAKAI_IMAGE
-    volumes:
-      - base:/usr/local/tomcat-base
-      - db:/docker-entrypoint-initdb.d
-volumes:
-  base:
-    driver: local
-  db:
-    driver: local

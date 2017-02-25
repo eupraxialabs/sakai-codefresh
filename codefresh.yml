@@ -95,6 +95,29 @@ steps:
          noSkipAll: '"${{PIPELINE_SKIP}}" != "all"'
          notBinaryRelease: '"${{BINARY_RELEASE}}" == ""'
        
+    build_database_image:
+      title: Building Database Image For Oracle
+      description: Build the database image in case you want to use Oracle
+      type: build
+      working_directory: ${{main_clone}}/oracle/
+      dockerfile: ${{ORACLE_VERSION}}
+      image_name: sakaiproject/oracle
+      tag: ${{ORACLE_VERSION}}
+      build_arguments:
+        - database=${{SAKAI_DATABASE}}
+      metadata:
+        set:
+          - database: ${{SAKAI_DATABASE}}
+          - oracle_version: ${{ORACLE_VERSION}}
+          - mysql_version: ${{MYSQL_VERSION}}
+          - binary_release: ${{BINARY_RELEASE}}
+          - repo: ${{REPO_OWNER}}/${{REPO_NAME}}
+          - revision: ${{REPO_REVISION}}
+      when:
+       condition:
+        all:
+         oracleDatabase: '"${{SAKAI_DATABASE}}" == "oracle"'
+
     build_image:
       title: Building Docker Sakai Image
       description: Build docker image with sakai binary code ready to run
@@ -129,7 +152,7 @@ steps:
        - DATABASE_COMMAND=-C utf8
        - SAKAI_IMAGE=${{REPO_OWNER}}/${{REPO_NAME}}:${{REPO_REVISION}}
       environment_name: '${{CF_REPO_NAME}}_${{CF_BRANCH}}'
-      entry_point: tomcat
+      entry_point: sakai
       when:
        condition:
         any:
@@ -142,12 +165,12 @@ steps:
       type: launch-composition
       composition: docker-compose.yml
       composition_variables:
-       - DATABASE_IMAGE=sath89/${{ORACLE_VERSION}}
+       - DATABASE_IMAGE=sakaiproject/oracle:${{ORACLE_VERSION}}
        - DATABASE_PORT=1521
        - DATABASE_COMMAND=./entrypoint.sh
        - SAKAI_IMAGE=${{REPO_OWNER}}/${{REPO_NAME}}:${{REPO_REVISION}}
       environment_name: '${{CF_REPO_NAME}}_${{CF_BRANCH}}'
-      entry_point: tomcat
+      entry_point: sakai
       when:
        condition:
         all:
