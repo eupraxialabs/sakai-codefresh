@@ -173,7 +173,7 @@ steps:
           - repo: '${{REPO_OWNER}}/${{REPO_NAME}}'
           - revision: '${{REPO_REVISION}}'
           - tag: '${{SAKAI_TAG}}'
-          - binary_release: '${{BINARY_RELEASE}}'
+          - bin_release: '${{BINARY_RELEASE}}'
           - server: '${{TOMCAT_IMAGE}}'
           - base_image: '${{SAKAI_BASE_TAG}}'
           - experimental: '${{EXPERIMENTAL_PROPS}}'
