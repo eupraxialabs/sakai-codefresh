@@ -4,9 +4,6 @@ COPY ./target/components/ /usr/local/tomcat-base/components/
 COPY ./target/lib/ /usr/local/tomcat-base/lib/
 COPY ./bin/ /usr/local/tomcat-base/bin/
 COPY ./conf/ /usr/local/tomcat-base/conf/
-COPY ./sakai/ /usr/local/tomcat-base/sakai/
-COPY ./sakai/mysql.properties /usr/local/tomcat-base/security-mysql/security.properties
-COPY ./sakai/oracle.properties /usr/local/tomcat-base/security-oracle/security.properties
-COPY ./sakai/mariadb.properties /usr/local/tomcat-base/security-mariadb/security.properties
-
-EXPOSE 8080
+COPY ./security/mysql.properties /usr/local/tomcat-base/security-mysql/security.properties
+COPY ./security/oracle.properties /usr/local/tomcat-base/security-oracle/security.properties
+COPY ./security/mariadb.properties /usr/local/tomcat-base/security-mariadb/security.properties

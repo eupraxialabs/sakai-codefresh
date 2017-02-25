@@ -1,4 +1,8 @@
 /.project
 /tomcat/Dockerfile
+/tomcat/sakai/local.properties
+/tomcat/sakai/sakai.properties
+/tomcat/sakai/placeholder.properties
+/tomcat/sakai/sakai.quartz.properties
 target
 binaries

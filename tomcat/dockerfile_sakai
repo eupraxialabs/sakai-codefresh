@@ -1,0 +1,2 @@
+
+COPY ./sakai/ /usr/local/tomcat-base/sakai/

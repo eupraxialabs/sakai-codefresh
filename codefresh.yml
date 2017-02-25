@@ -11,8 +11,8 @@ steps:
       when:
        condition:
         all:
-         notBinaryRelease: '"${{BINARY_RELEASE}}" == ""'
-         notSakaiExperimental: 'Variable("SAKAI_BASE_TAG") == ""'
+         notBinaryRelease: 'includes("${{BINARY_RELEASE}}", "$") == true'
+         notSakaiExperimental: 'includes("${{SAKAI_BASE_TAG}}", "$") == true'
       
     binary_release:
       title: Download Sakai Binary Release
@@ -28,7 +28,7 @@ steps:
       when:
        condition:
         all:
-         useBinaryRelease: '"${{BINARY_RELEASE}}" != ""'
+         useBinaryRelease: 'includes("${{BINARY_RELEASE}}", "$") == false'
          notDemoBinaryRelease: '"${{BINARY_RELEASE}}" != "demo"'
 
     binary_demo_release:
@@ -46,7 +46,8 @@ steps:
        condition:
         all:
          useBinaryRelease: '"${{BINARY_RELEASE}}" == "demo"'
-         
+         notSakaiExperimental: 'includes("${{SAKAI_BASE_TAG}}", "$") == true'
+    
     mvn_enc:
       title: Encrypt Maven Settings For Oracle Download
       description: Make necessary steps to be able to download jdbc driver from oracle maven repository
@@ -61,9 +62,9 @@ steps:
       when:
        condition:
         all:
-         existsMasterPassword: '"${{MASTER_PASSWORD}}" != ""'
+         existsMasterPassword: 'includes("${{MASTER_PASSWORD}}", "$") == false'
          oracleDatabase: '"${{SAKAI_DB_DRIVER}}" == "oracle"'
-         notSakaiExperimental: '"${{SAKAI_BASE_TAG}}" == ""'
+         notSakaiExperimental: 'includes("${{SAKAI_BASE_TAG}}", "$") == true'
 
     build_wait:
       title: Build Wait For Database Code
@@ -81,7 +82,7 @@ steps:
       when:
        condition:
         all:
-         notSakaiExperimental: '"${{SAKAI_BASE_TAG}}" == ""'
+         notSakaiExperimental: 'includes("${{SAKAI_BASE_TAG}}", "$") == true'
 	   
     build_code:
       title: Build Sakai Code Skiping Tests
@@ -98,8 +99,8 @@ steps:
       when:
        condition:
         all:
-         notBinaryRelease: '"${{BINARY_RELEASE}}" == ""'
-         notSakaiExperimental: '"${{SAKAI_BASE_TAG}}" == ""'
+         notBinaryRelease: 'includes("${{BINARY_RELEASE}}", "$") == true'
+         notSakaiExperimental: 'includes("${{SAKAI_BASE_TAG}}", "$") == true'
        
     build_dockerfile:
       title: Build Dockerfile
@@ -107,9 +108,39 @@ steps:
       image: arkban/alpine-aws-wget:latest
       working_directory: ${{main_clone}}
       commands:
+        - touch ./tomcat/sakai/local.properties
+        - touch ./tomcat/sakai/sakai.properties
+        - touch ./tomcat/sakai/placeholder.properties
+        - echo 'org.quartz.jobStore.isClustered = true' > ./tomcat/sakai/sakai.quartz.properties
         - echo 'FROM ${{TOMCAT_IMAGE}}' > ./tomcat/Dockerfile
         - echo '' >> ./tomcat/Dockerfile
         - cat ./tomcat/dockerfile_base >> ./tomcat/Dockerfile
+        - cat ./tomcat/dockerfile_sakai >> ./tomcat/Dockerfile
+        - echo 'EXPOSE 8080' >> ./tomcat/Dockerfile
+      when:
+       condition:
+        all:
+         notSakaiExperimental: 'includes("${{SAKAI_BASE_TAG}}", "$") == true'
+
+    build_experimental_dockerfile:
+      title: Build Dockerfile For Experimental
+      description: Create dockerfile to build Sakai image with experimental properties
+      image: arkban/alpine-aws-wget:latest
+      working_directory: ${{main_clone}}
+      commands:
+        - touch ./tomcat/sakai/local.properties
+        - touch ./tomcat/sakai/sakai.properties
+        - touch ./tomcat/sakai/placeholder.properties
+        - echo 'org.quartz.jobStore.isClustered = true' > ./tomcat/sakai/sakai.quartz.properties
+        - wget -O ./tomcat/${{PROPERTIES_FILE}} ${{EXPERIMENTAL_PROPS}} --no-check-certificate
+        - echo 'FROM ${{SAKAI_BASE_TAG}}' > ./tomcat/Dockerfile
+        - echo '' >> ./tomcat/Dockerfile
+        - cat ./tomcat/dockerfile_sakai >> ./tomcat/Dockerfile
+        - echo 'EXPOSE 8080' >> ./tomcat/Dockerfile
+      when:
+       condition:
+        all:
+         isSakaiExperimental: 'includes("${{SAKAI_BASE_TAG}}", "$") == false'
 
     build_database_image:
       title: Building Database Image For Oracle
@@ -121,13 +152,13 @@ steps:
       tag: ${{DB_VERSION}}
       metadata:
         set:
-          - database: ${{DB_IMAGE}}
-          - version: ${{DB_VERSION}}
+          - database: '${{DB_IMAGE}}'
+          - version: '${{DB_VERSION}}'
       when:
        condition:
         all:
+         noSkipOracleBuild: '"${{SKIP_ORACLE_BUILD}}" != "true"'
          oracleDatabase: '"${{SAKAI_DB_DRIVER}}" == "oracle"'
-         notSakaiExperimental: '"${{SAKAI_BASE_TAG}}" == ""'
 
     build_image:
       title: Building Docker Sakai Image
@@ -139,10 +170,14 @@ steps:
       tag: ${{SAKAI_TAG}}
       metadata:
         set:
-          - binary_release: ${{BINARY_RELEASE}}
-          - repo: ${{REPO_OWNER}}/${{REPO_NAME}}
-          - revision: ${{REPO_REVISION}}
-          - tag: ${{SAKAI_TAG}}
+          - repo: '${{REPO_OWNER}}/${{REPO_NAME}}'
+          - revision: '${{REPO_REVISION}}'
+          - tag: '${{SAKAI_TAG}}'
+          - binary_release: '${{BINARY_RELEASE}}'
+          - server: '${{TOMCAT_IMAGE}}'
+          - base_image: '${{SAKAI_BASE_TAG}}'
+          - experimental: '${{EXPERIMENTAL_PROPS}}'
+          - properties: '${{PROPERTIES_FILE}}'
         
     launch_sakai_composition:
       title: Launch Sakai Server Composition
@@ -155,3 +190,8 @@ steps:
        - SAKAI_IMAGE=${{REPO_OWNER}}/${{REPO_NAME}}:${{SAKAI_TAG}}
       environment_name: '${{CF_REPO_NAME}}_${{CF_BRANCH}}'
       entry_point: sakai
+      when:
+       condition:
+        all:
+         noSkipOracleBuild: '"${{SKIP_LAUNCH}}" != "true"'
+   
