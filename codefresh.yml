@@ -20,9 +20,11 @@ steps:
       working_directory: ${{main_clone}}
       commands:
         - rm -rf ./tomcat/target
+        - mkdir -p ./tomcat/target
         - mkdir -p ./binaries
-        - wget -O ./binaries/sakai.tgz http://source.sakaiproject.org/release/${{BINARY_RELEASE}}/artifacts/sakai-bin-${{BINARY_RELEASE}}.tar.gz  --no-check-certificate
-        - tar xzvC ./tomcat/target -f ./binaries/sakai.tgz
+        - test -f ./binaries/sakai.tgz && mv ./binaries/sakai.tgz ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz
+        - test ! -f ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz && wget -O ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz http://source.sakaiproject.org/release/${{BINARY_RELEASE}}/artifacts/sakai-bin-${{BINARY_RELEASE}}.tar.gz  --no-check-certificate
+        - tar xzvC ./tomcat/target -f ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz
       when:
        condition:
         all:
