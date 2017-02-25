@@ -49,8 +49,8 @@ steps:
          notSakaiExperimental: 'includes("${{SAKAI_BASE_TAG}}", "$") == true'
     
     clean_tomcat:
-      title: Download Demo Binary Release
-      description: Download some binary demo release to test it without build from source
+      title: Clean Tomcat Deployment
+      description: Clear all tomcat folders
       image: arkban/alpine-aws-wget:latest
       working_directory: ${{main_clone}}
       commands:
