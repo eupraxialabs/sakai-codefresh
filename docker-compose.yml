@@ -19,6 +19,7 @@ services:
     links:
       - database
     environment:
-      - CATALINA_OPTS_EXTRA=-Dsakai.demo=true -Dsakai.security=/usr/local/tomcat-base/security-$DATABASE_TYPE
+      - JAVA_OPTS=-server -Xms512m -Xmx1280m -XX:MaxMetaspaceSize=512m -XX:NewSize=192m -XX:MaxNewSize=384m -Doracle.jdbc.timezoneAsRegion=false -Djava.awt.headless=true -Dhttp.agent=Sakai -Dorg.apache.jasper.compiler.Parser.STRICT_QUOTE_ESCAPING=false -Dsun.lang.ClassLoader.allowArraySyntax=true -Dfile.encoding=UTF-8
+      - CATALINA_OPTS=-Dsakai.demo=true -Duser.language=es -Duser.region=ES -Dsakai.security=/usr/local/tomcat-base/security-$DATABASE_TYPE -Dsakai.home=/usr/local/tomcat-base/sakai -Dsakai.components.root=/usr/local/tomcat-base/components
       - CATALINA_BASE=/usr/local/tomcat-base
     command: ["/usr/local/tomcat-base/bin/wait-before.sh", "$DATABASE_TYPE", "catalina.sh", "run"]      

@@ -45,7 +45,7 @@ You can build many different sakai images ready to run at any moment. You just h
 	* BINARY_RELEASE=11.3,... // Choose a release and don't build the code just test binary releases (fast)
 	* DB_IMAGE=mysql,mariadb,sakaiproject/oracle // Choose the database docker image
 	* DB_VERSION=5.6.27,5.5.54,oracle-xe-11g,oracle-12c
-	* SAKAI_TAG=my_tag_name // Use this to tag your new sakai image, master, 11.3, PRxxx, ...
+	* SAKAI_TAG=my_tag_name // Use this to tag your new sakai image, master, v11.3, PRxxx, ...
 
 ## Build a binary release
 
@@ -54,7 +54,7 @@ The first thing you can do is trying a Sakai binary release, without building fr
 * Steps to build Sakai 11.3 for any database:
 	* REPO_OWNER=sakaiproject
 	* REPO_NAME=sakai
-	* SAKAI_TAG=11.3
+	* SAKAI_TAG=v11.3
 	* TOMCAT_IMAGE=tomcat:8.0.41-jre8
 	* BINARY_RELEASE=11.3
 	* SKIP_LAUNCH=true
@@ -122,7 +122,7 @@ For example you can test some property in a previous 11.3 sakai build.
 	- EXPERIMENTAL_PROPS=some_url - Any URL with a set of properties, like [this](https://raw.githubusercontent.com/sakaiproject/nightly-config/master/experimental.properties)
 	- PROPERTIES_FILE=local.properties,sakai.properties,... - Any properties file you want to overwrite.
 	- SAKAI_BASE_TAG=sakaiproject/sakai:11.3 - The existing image you want to try with this properties. 
-	- SAKAI_TAG=11.3_experimental - You could use any name to tag new image. 
+	- SAKAI_TAG=v11.3_experimental - You could use any name to tag new image. 
 	- Build - Build the image
 
 ## More tips and tricks
@@ -136,7 +136,7 @@ For example you can test some property in a previous 11.3 sakai build.
 		* SAKAI_BASE_TAG=sakaiproject/sakai:11.3
 		* EXPERIMENTAL_PROPS=https://beta.etherpad.org/p/your-etherpad-name/export/txt
 		* PROPERTIES_FILE=local.properties - To add properties in this file
-		* SAKAI_TAG=11.3_experimental - Any name you want to use to tag the new image
+		* SAKAI_TAG=v11.3_experimental - Any name you want to use to tag the new image
 		* SKIP_LAUNCH=true - Do not run the image, just build it.
 	* You can create multiple pipelines to build different Sakai images.
 		* Create pipeline and set environment variables
