@@ -22,10 +22,8 @@ steps:
         - rm -rf ./tomcat/target
         - mkdir -p ./tomcat/target
         - mkdir -p ./binaries
-        - test -f ./binaries/sakai.tgz && mv ./binaries/sakai.tgz ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz ; echo "File not exists."
-        - test ! -f ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz && wget -O ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz http://source.sakaiproject.org/release/${{BINARY_RELEASE}}/artifacts/sakai-bin-${{BINARY_RELEASE}}.tar.gz  --no-check-certificate ; echo "File already exists."
+        - test ! -f ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz && wget -O ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz http://source.sakaiproject.org/release/${{BINARY_RELEASE}}/artifacts/sakai-bin-${{BINARY_RELEASE}}.tar.gz  --no-check-certificate ; echo "Sakai Binary Release ${{BINARY_RELEASE}} already download."
         - tar xzvC ./tomcat/target -f ./binaries/sakai-bin-${{BINARY_RELEASE}}.tar.gz
-        - echo 7
       when:
        condition:
         all:
@@ -104,13 +102,17 @@ steps:
       working_directory: ${{main_clone}}/tomcat/
       dockerfile: Dockerfile
       image_name: ${{REPO_OWNER}}/${{REPO_NAME}}
-      tag: ${{REPO_REVISION}}
+      tag: ${{REPO_REVISION}}${{BINARY_RELEASE}}
       build_arguments:
         - database=${{SAKAI_DATABASE}}
       metadata:
         set:
           - database: ${{SAKAI_DATABASE}}
-          - version: ${{MYSQL_VERSION}}/${{ORACLE_VERSION}}
+          - oracle_version: ${{ORACLE_VERSION}}
+          - mysql_version: ${{MYSQL_VERSION}}
+          - binary_release: ${{BINARY_RELEASE}}
+          - repo: ${{REPO_OWNER}}/${{REPO_NAME}}
+          - revision: ${{REPO_REVISION}}
       when:
        condition:
         all:
