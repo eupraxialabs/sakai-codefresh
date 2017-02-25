@@ -19,6 +19,7 @@ steps:
       image: arkban/alpine-aws-wget:latest
       working_directory: ${{main_clone}}
       commands:
+        - rm -rf ./tomcat/target
         - mkdir -p ./binaries
         - wget -O ./binaries/sakai.tgz http://source.sakaiproject.org/release/${{BINARY_RELEASE}}/artifacts/sakai-bin-${{BINARY_RELEASE}}.tar.gz  --no-check-certificate
         - tar xzvC ./tomcat/target -f sakai.tgz
@@ -34,6 +35,7 @@ steps:
       image: arkban/alpine-aws-wget:latest
       working_directory: ${{main_clone}}
       commands:
+        - rm -rf ./tomcat/target
         - mkdir -p ./tomcat/target/webapps
         - mkdir -p ./tomcat/target/components
         - wget -O ./tomcat/target/webapps/portal.war https://tomcat.apache.org/tomcat-8.0-doc/appdev/sample/sample.war --no-check-certificate
