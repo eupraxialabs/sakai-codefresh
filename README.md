@@ -18,6 +18,7 @@ _Codefresh_ will create a _Sakai docker image_ ready to run with any supported d
 		- [I Want to launch a previous image](#i-want-to-launch-a-previous-image)
 		- [I Want to test some sakai property](#i-want-to-test-some-sakai-property)
 	- [More tips and tricks](#more-tips-and-tricks)
+
 - - -
 
 ## Configuration
@@ -25,26 +26,26 @@ _Codefresh_ will create a _Sakai docker image_ ready to run with any supported d
 Create a codefresh.io account (if you don't have one already), and follow this steps to get your own test sakai server up and running.
 
 * Configuration steps:
-	* Add new service - Add a new service in codefresh. 
-	* Use repo url - Choose this repo as URL.
-	* Use ./codefresh.yml - Select the codefresh file located in the repo.
-	* Configure build settings - See the next section to get more information [here](#build-settings).
-	* Build/launch - Now you can build your Sakai image and test it in some URL.
+	* _Add new service_ - Add a new service in codefresh. 
+	* _Use repo url_ - Choose this repo as URL.
+	* _Use ./codefresh.yml_ - Select the codefresh file located in the repo.
+	* _Configure build settings_ - See the next section to get more information [here](#build-settings).
+	* _Build/launch_ - Now you can build your Sakai image and test it in some URL.
 
 ## Build Settings
 
 You can build many different sakai images ready to run at any moment. You just have to set some variables in *launch settings* option:
 
 * Settings:
-	* REPO_OWNER=sakaiproject,myfork,<any_github_account> (with sakai source code :D)
+	* REPO_OWNER=sakaiproject,myfork,... (with sakai source code :D)
 	* REPO_NAME=sakai
 	* REPO_REVISION=branch,hash_value,...
 	* TOMCAT_IMAGE=tomcat:8.0.41-jre8,... // Choose tomcat docker image you want to use
 	* SAKAI_DB_DRIVER=mariadb,mysql,oracle //Choose the database driver you want to use in your environment
-	* BINARY_RELEASE=11.0,11.1,11.2,... // Choose a release and don't build the code just test binary releases (fast)
+	* BINARY_RELEASE=11.3,... // Choose a release and don't build the code just test binary releases (fast)
 	* DB_IMAGE=mysql,mariadb,sakaiproject/oracle // Choose the database docker image
 	* DB_VERSION=5.6.27,5.5.54,oracle-xe-11g,oracle-12c
-	* SAKAI_TAG=<anystring> // Use this to tag your new sakai image, master, 11.3, PRxxx, ...
+	* SAKAI_TAG=my_tag_name // Use this to tag your new sakai image, master, 11.3, PRxxx, ...
 
 ## Build a binary release
 
@@ -69,12 +70,12 @@ Codefresh persist your main volume, so your maven repo will be shared between bu
 For oracle database you need the oracle jdbc driver, and that requires and account, so you need to go to https://maven.oracle.com to get and account and accept the Oracle terms and conditions to download it.
 
 * Oracle settings:
-	* ORACLE_USER=<your_oracle_user>
-	* ORACLE_PASS=<your_oracle_pass>
-	* MASTER_PASSWORD=<any_maven_master_password_you_want>
+	* ORACLE_USER=your_oracle_user - Your oracle account user
+	* ORACLE_PASS=your_oracle_pass - Your oracle account password
+	* MASTER_PASSWORD=some_pass - Any password to encrypt maven settings
 
 * Once you download the driver, it persists in codefresh volume, so you can skip this step:
-	* Delete MASTER_PASSWORD variable.
+	* Delete _MASTER_PASSWORD_ variable.
 * Also for oracle database you have to build the database image, once you have the image in your local docker registry you can skip this step:
 	* Add variable `SKIP_ORACLE_BUILD=true`
 
@@ -115,7 +116,7 @@ Sakai images are build with all its default properties. If you want to change th
 For example you can test some property in a previous 11.3 sakai build.
 
 * Testing experimental properties:
-	- EXPERIMENTAL_PROPS=<some_url> - Any URL with a set of properties, like [this](https://raw.githubusercontent.com/sakaiproject/nightly-config/master/experimental.properties)
+	- EXPERIMENTAL_PROPS=some_url - Any URL with a set of properties, like [this](https://raw.githubusercontent.com/sakaiproject/nightly-config/master/experimental.properties)
 	- PROPERTIES_FILE=local.properties,sakai.properties,... - Any properties file you want to overwrite.
 	- SAKAI_BASE_TAG=sakaiproject/sakai:11.3 - The existing image you want to try with this properties. 
 	- SAKAI_TAG=11.3_experimental - You could use any name to tag new image. 
@@ -130,7 +131,7 @@ For example you can test some property in a previous 11.3 sakai build.
 		* Create and etherpad - You could use the beta [here](https://beta.etherpad.org/)
 		* Write the properties - Fill the etherpad with your properties
 		* SAKAI_BASE_TAG=sakaiproject/sakai:11.3
-		* EXPERIMENTAL_PROPS=https://beta.etherpad.org/p/<your-etherpad-name>/export/txt
+		* EXPERIMENTAL_PROPS=https://beta.etherpad.org/p/your-etherpad-name/export/txt
 		* PROPERTIES_FILE=local.properties - To add properties in this file
 		* SAKAI_TAG=11.3_experimental - Any name you want to use to tag the new image
 		* SKIP_LAUNCH=true - Do not run the image, just build it.
