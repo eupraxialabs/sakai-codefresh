@@ -45,6 +45,7 @@ You can build many different sakai images ready to run at any moment. You just h
 	* BINARY_RELEASE=11.3,... // Choose a release and don't build the code just test binary releases (fast)
 	* DB_IMAGE=mysql,mariadb,sakaiproject/oracle // Choose the database docker image
 	* DB_VERSION=5.6.27,5.5.54,oracle-xe-11g,oracle-12c
+	* SAKAI_IMAGE_NAME=sakaiproject/sakai // The name for the sakai image (If you want to promote to a public registry use your-registry-user/sakai)
 	* SAKAI_TAG=my_tag_name // Use this to tag your new sakai image, master, v11.3, PRxxx, ...
 
 ## Build a binary release
@@ -54,6 +55,7 @@ The first thing you can do is trying a Sakai binary release, without building fr
 * Steps to build Sakai 11.3 for any database:
 	* REPO_OWNER=sakaiproject
 	* REPO_NAME=sakai
+	* SAKAI_IMAGE_NAME=sakaiproject/sakai
 	* SAKAI_TAG=v11.3
 	* TOMCAT_IMAGE=tomcat:8.0.41-jre8
 	* BINARY_RELEASE=11.3
@@ -94,6 +96,7 @@ You can easily test any Sakai PR following a few steps, supposing you want to te
 	* REPO_OWNER=master-bob
 	* REPO_NAME=sakai
 	* REPO_REVISION=SAK-31068_ForumsImportAsDraft
+	* SAKAI_IMAGE_NAME=master-bob/sakai
 	* SAKAI_TAG=PR_2368 // You could use any name you want
 	
 Now you can build the image and test it.
@@ -110,7 +113,7 @@ You can run again any build you already create, for example, if you build a Saka
 	* Composition variables - Add the composition variables you need.
 		* DATABASE_IMAGE=mysql:5.6.27
 		* DATABASE_TYPE=mysql
-		* SAKAI_IMAGE=sakaiproject/sakai:11.3
+		* SAKAI_IMAGE=sakaiproject/sakai:v11.3
 	* Launch - Click launch to run Sakai. 
 
 ### I Want to test some sakai property
@@ -118,12 +121,15 @@ You can run again any build you already create, for example, if you build a Saka
 Sakai images are build with all its default properties. If you want to change the default value for some property you don't need to rebuild the image compiling the code. You can build the image from the original one just adding your property changes.
 For example you can test some property in a previous 11.3 sakai build.
 
+You need to promote your image first to a public registry, connect codefresh to one public registry following this [steps](https://docs.codefresh.io/docs/docker-registry)
+
 * Testing experimental properties:
-	- EXPERIMENTAL_PROPS=some_url - Any URL with a set of properties, like [this](https://raw.githubusercontent.com/sakaiproject/nightly-config/master/experimental.properties)
-	- PROPERTIES_FILE=local.properties,sakai.properties,... - Any properties file you want to overwrite.
-	- SAKAI_BASE_TAG=sakaiproject/sakai:11.3 - The existing image you want to try with this properties. 
-	- SAKAI_TAG=v11.3_experimental - You could use any name to tag new image. 
-	- Build - Build the image
+	* EXPERIMENTAL_PROPS=some_url - Any URL with a set of properties, like [this](https://raw.githubusercontent.com/sakaiproject/nightly-config/master/experimental.properties)
+	* PROPERTIES_FILE=local.properties,sakai.properties,... - Any properties file you want to overwrite.
+	* SAKAI_BASE_TAG=sakaiproject/sakai:11.3 - The existing image you want to try with this properties.
+	* SAKAI_IMAGE_NAME=sakaiproject/sakai 
+	* SAKAI_TAG=v11.3_experimental - You could use any name to tag new image. 
+	* Build - Build the image
 
 ## More tips and tricks
 
@@ -136,7 +142,13 @@ For example you can test some property in a previous 11.3 sakai build.
 		* SAKAI_BASE_TAG=sakaiproject/sakai:11.3
 		* EXPERIMENTAL_PROPS=https://beta.etherpad.org/p/your-etherpad-name/export/txt
 		* PROPERTIES_FILE=local.properties - To add properties in this file
+		* SAKAI_IMAGE_NAME=sakaiproject/sakai
 		* SAKAI_TAG=v11.3_experimental - Any name you want to use to tag the new image
 		* SKIP_LAUNCH=true - Do not run the image, just build it.
 	* You can create multiple pipelines to build different Sakai images.
 		* Create pipeline and set environment variables
+	* You can run your build images in your PC.
+		* Build images and promote them to some public registry
+		* Then use the docker-compose to run the image:
+			
+			
