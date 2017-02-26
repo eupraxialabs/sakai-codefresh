@@ -7,7 +7,7 @@ steps:
       title: Sakai Clone Repository
       description: Clone the specific sakai repo you want to test
       repo: https://github.com/${{REPO_OWNER}}/${{REPO_NAME}}.git
-      revision: ${{REPO_REVISION}}
+      revision: '${{REPO_REVISION}}'
       when:
        condition:
         all:
@@ -157,9 +157,9 @@ steps:
       description: Build the database image in case you want to use Oracle
       type: build
       working_directory: ${{main_clone}}/oracle/
-      dockerfile: ${{DB_VERSION}}
-      image_name: ${{DB_IMAGE}}
-      tag: ${{DB_VERSION}}
+      dockerfile: '${{DB_VERSION}}'
+      image_name: '${{DB_IMAGE}}'
+      tag: '${{DB_VERSION}}'
       metadata:
         set:
           - database: '${{DB_IMAGE}}'
@@ -176,8 +176,8 @@ steps:
       type: build
       working_directory: ${{main_clone}}/tomcat/
       dockerfile: Dockerfile
-      image_name: ${{SAKAI_IMAGE_NAME}}
-      tag: ${{SAKAI_TAG}}
+      image_name: '${{SAKAI_IMAGE_NAME}}'
+      tag: '${{SAKAI_TAG}}'
       metadata:
         set:
           - repo: '${{REPO_OWNER}}/${{REPO_NAME}}'
