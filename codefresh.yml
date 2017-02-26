@@ -185,7 +185,8 @@ steps:
           - tag: '${{SAKAI_TAG}}'
           - server: '${{TOMCAT_IMAGE}}'
           - driver: '${{SAKAI_DB_DRIVER}}'
-          - code: '${{main_clone.revision}}'
+          - code: 
+              evaluate: "Member('main_clone','revision')+Member('main_clone','repo')+Member('main_clone','imageId')"
           - bin_release: '${{BINARY_RELEASE}}'
           - base_image: '${{SAKAI_BASE_TAG}}'
           - experimental: '${{EXPERIMENTAL_PROPS}}'
