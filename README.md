@@ -115,7 +115,8 @@ You can run again any build you already create, for example, if you build a Saka
 		* DATABASE_IMAGE=mysql:5.6.27,...
 		* DATABASE_DRIVER=[mysql,mariadb,oracle] // One of the supported databases for Sakai
 		* SAKAI_IMAGE=sakaiproject/sakai:v11.3
-	* Launch - Click launch to run Sakai. 
+	* Launch - Click launch to run Sakai.
+	* If you don't use the variable SAKAI_IMAGE, and directly replace this variable in the composition with an image url, you will be able to launch the composition from the images view in the launch icon of the selected image. 
 
 ### I Want to test some sakai property
 
