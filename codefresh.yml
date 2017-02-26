@@ -28,7 +28,7 @@ steps:
       when:
        condition:
         all:
-         useBinaryRelease: '(includes("${{BINARY_RELEASE}}", "$") == false) && ("${{BINARY_RELEASE}} != "-")'
+         useBinaryRelease: '(includes("${{BINARY_RELEASE}}", "$") == false) && ("${{BINARY_RELEASE}}" != "-")'
 
     clean_tomcat:
       title: Clean Tomcat Deployment
