@@ -11,8 +11,8 @@ steps:
       when:
        condition:
         all:
-         notBinaryRelease: 'includes("${{BINARY_RELEASE}}", "$") == true'
-         notSakaiExperimental: 'includes("${{SAKAI_BASE_TAG}}", "$") == true'
+         notBinaryRelease: '(includes("${{BINARY_RELEASE}}", "$") == true) || ("${{BINARY_RELEASE}}" == "-")'
+         notSakaiExperimental: '(includes("${{SAKAI_BASE_TAG}}", "$") == true) || ("${{SAKAI_BASE_TAG}}" == "-")'
       
     binary_release:
       title: Download Sakai Binary Release
@@ -28,7 +28,7 @@ steps:
       when:
        condition:
         all:
-         useBinaryRelease: 'includes("${{BINARY_RELEASE}}", "$") == false'
+         useBinaryRelease: '(includes("${{BINARY_RELEASE}}", "$") == false) && ("${{BINARY_RELEASE}} != "-")'
          notDemoBinaryRelease: '"${{BINARY_RELEASE}}" != "demo"'
 
     binary_demo_release:
@@ -45,8 +45,8 @@ steps:
       when:
        condition:
         all:
-         useBinaryRelease: '"${{BINARY_RELEASE}}" == "demo"'
-         notSakaiExperimental: 'includes("${{SAKAI_BASE_TAG}}", "$") == true'
+         demoBinaryRelease: '"${{BINARY_RELEASE}}" == "demo"'
+         notSakaiExperimental: '(includes("${{SAKAI_BASE_TAG}}", "$") == true) || ("${{SAKAI_BASE_TAG}}" == "-")'
     
     clean_tomcat:
       title: Clean Tomcat Deployment
@@ -58,8 +58,8 @@ steps:
       when:
        condition:
         all:
-         notBinaryRelease: 'includes("${{BINARY_RELEASE}}", "$") == true'
-         notSakaiExperimental: 'includes("${{SAKAI_BASE_TAG}}", "$") == true'
+         notBinaryRelease: '(includes("${{BINARY_RELEASE}}", "$") == true) || ("${{BINARY_RELEASE}}" == "-")'
+         notSakaiExperimental: '(includes("${{SAKAI_BASE_TAG}}", "$") == true) || ("${{SAKAI_BASE_TAG}}" == "-")'
     
     mvn_enc:
       title: Encrypt Maven Settings For Oracle Download
@@ -77,7 +77,7 @@ steps:
         all:
          existsMasterPassword: 'includes("${{MASTER_PASSWORD}}", "$") == false'
          oracleDatabase: '"${{SAKAI_DB_DRIVER}}" == "oracle" || "${{SAKAI_DB_DRIVER}}" == "all"'
-         notSakaiExperimental: 'includes("${{SAKAI_BASE_TAG}}", "$") == true'
+         notSakaiExperimental: '(includes("${{SAKAI_BASE_TAG}}", "$") == true) || ("${{SAKAI_BASE_TAG}}" == "-")'
 
     build_wait:
       title: Build Wait For Database Code
@@ -95,7 +95,7 @@ steps:
       when:
        condition:
         all:
-         notSakaiExperimental: 'includes("${{SAKAI_BASE_TAG}}", "$") == true'
+         notSakaiExperimental: '(includes("${{SAKAI_BASE_TAG}}", "$") == true) || ("${{SAKAI_BASE_TAG}}" == "-")'
 	   
     build_code:
       title: Build Sakai Code Skiping Tests
@@ -109,8 +109,8 @@ steps:
       when:
        condition:
         all:
-         notBinaryRelease: 'includes("${{BINARY_RELEASE}}", "$") == true'
-         notSakaiExperimental: 'includes("${{SAKAI_BASE_TAG}}", "$") == true'
+         notBinaryRelease: '(includes("${{BINARY_RELEASE}}", "$") == true) || ("${{BINARY_RELEASE}}" == "-")'
+         notSakaiExperimental: '(includes("${{SAKAI_BASE_TAG}}", "$") == true) || ("${{SAKAI_BASE_TAG}}" == "-")'
        
     build_dockerfile:
       title: Build Dockerfile
@@ -130,7 +130,7 @@ steps:
       when:
        condition:
         all:
-         notSakaiExperimental: 'includes("${{SAKAI_BASE_TAG}}", "$") == true'
+         notSakaiExperimental: '(includes("${{SAKAI_BASE_TAG}}", "$") == true) || ("${{SAKAI_BASE_TAG}}" == "-")'
 
     build_experimental_dockerfile:
       title: Build Dockerfile For Experimental
@@ -150,7 +150,7 @@ steps:
       when:
        condition:
         all:
-         isSakaiExperimental: 'includes("${{SAKAI_BASE_TAG}}", "$") == false'
+         isSakaiExperimental: '(includes("${{SAKAI_BASE_TAG}}", "$") == false) && ("${{SAKAI_BASE_TAG}}" != "-")'
 
     build_database_image:
       title: Building Database Image For Oracle
