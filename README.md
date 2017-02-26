@@ -18,6 +18,7 @@ _Codefresh_ will create a _Sakai docker image_ ready to run with any supported d
 		- [I Want to launch a previous image](#i-want-to-launch-a-previous-image)
 		- [I Want to test some sakai property](#i-want-to-test-some-sakai-property)
 	- [More tips and tricks](#more-tips-and-tricks)
+	- [Complete list of variables](#complete-list-of-variables)
 
 - - -
 
@@ -106,13 +107,13 @@ Now you can build the image and test it.
 You can run again any build you already create, for example, if you build a Sakai 11.3 from binary, and you want to run it again, just launch the image, you don't have to rebuild it is already in your local docker registry.
 
 * Launch any image:
-	* Check availability - The image should be available in _Images_ at codefresh.
+	* Check availability - The image should be available in any public docker registry.
 	* Create a composition - Go to compositions and add a new composition.
 	* Use repo url - Choose this repo as URL.
 	* Use ./docker-compose.yml - Use the docker-compose.yml file located in the repo.
 	* Composition variables - Add the composition variables you need.
-		* DATABASE_IMAGE=mysql:5.6.27
-		* DATABASE_TYPE=mysql
+		* DATABASE_IMAGE=mysql:5.6.27,...
+		* DATABASE_DRIVER=[mysql,mariadb,oracle] // One of the supported databases for Sakai
 		* SAKAI_IMAGE=sakaiproject/sakai:v11.3
 	* Launch - Click launch to run Sakai. 
 
@@ -147,8 +148,53 @@ You need to promote your image first to a public registry, connect codefresh to 
 		* SKIP_LAUNCH=true - Do not run the image, just build it.
 	* You can create multiple pipelines to build different Sakai images.
 		* Create pipeline and set environment variables
-	* You can run your build images in your PC.
+	* You can run your build images in your PC after promote them to a public registry.
 		* Build images and promote them to some public registry
-		* Then use the docker-compose to run the image:
-			
-			
+		* Then use the _docker-compose.yml_ file in this repo to run the image:
+			* Create a .env file with the values you want to run:
+				* SAKAI_IMAGE=mipublic/image
+				* DATABASE_IMAGE=mysql:5.6.27
+				* DATABASE_DRIVER=mysql
+			* Type: `docker-compose up -d`
+			* Look at the port created to access to Sakai instance typing: `docker-compose ps`
+			* Connect to http://localhost:port/
+
+## Complete list of variables
+
+Here is the complete list of properties you may want to use:
+
+* Build from source:
+
+	* REPO_OWNER: Github repo owner (sakaiproject or any other fork)
+	* REPO_NAME: Github repo name (sakai)
+	* REPO_REVISION: Branch, tag, hash you want to use
+
+* Build from binary release:
+
+	* BINARY_RELEASE: One existing Sakai binary release version.
+
+* Build from other image:
+
+	* EXPERIMENTAL_PROPS: Url to download the properties you want to use
+	* PROPERTIES_FILE: File name to use (sakai.porperties, local.properties, ...)
+	* SAKAI_BASE_TAG: Base image to build the new image from
+
+* Oracle settings:
+
+	* MASTER_PASSWORD: Any password to encrypt maven settings
+	* ORACLE_USER: Your oracle user
+	* ORACLE_PASS: Your oracle password
+	* SKIP_ORACLE_BUILD[true,false]: Do not build oracle image 
+
+* Common settings:
+
+	* TOMCAT_IMAGE: Tomcat docker image (Look at the [release notes](https://confluence.sakaiproject.org/display/DOC/Release+Documentation)) 
+	* SAKAI_DB_DRIVER[mariadb,mysql,oracle,all]: Database drive to add to your Sakai image
+	* SAKAI_IMAGE_NAME: Name of the image created
+	* SAKAI_TAG: Tag for the created image
+
+* Launch settings:
+
+	* DB_IMAGE: Database image to use with your Sakai instance (you must have the right driver loaded in the image)
+	* DB_VERSION: Version of the database you want to use
+	* SKIP_LAUNCH[true,false]: Do not launch the image created

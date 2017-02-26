@@ -7,3 +7,4 @@
 /tomcat/sakai/sakai.quartz.properties
 target
 binaries
+.env

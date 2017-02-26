@@ -142,7 +142,7 @@ steps:
         - touch ./tomcat/sakai/sakai.properties
         - touch ./tomcat/sakai/placeholder.properties
         - echo 'org.quartz.jobStore.isClustered = true' > ./tomcat/sakai/sakai.quartz.properties
-        - wget -O ./tomcat/${{PROPERTIES_FILE}} ${{EXPERIMENTAL_PROPS}} --no-check-certificate
+        - wget -O ./tomcat/sakai/${{PROPERTIES_FILE}} ${{EXPERIMENTAL_PROPS}} --no-check-certificate
         - echo 'FROM ${{SAKAI_BASE_TAG}}' > ./tomcat/Dockerfile
         - echo '' >> ./tomcat/Dockerfile
         - cat ./tomcat/dockerfile_sakai >> ./tomcat/Dockerfile
@@ -196,7 +196,7 @@ steps:
       type: launch-composition
       composition: docker-compose.yml
       composition_variables:
-       - DATABASE_TYPE=${{SAKAI_DB_DRIVER}}
+       - DATABASE_DRIVER=${{SAKAI_DB_DRIVER}}
        - DATABASE_IMAGE=${{DB_IMAGE}}:${{DB_VERSION}}
        - SAKAI_IMAGE=${{SAKAI_IMAGE_NAME}}:${{SAKAI_TAG}}
       environment_name: '${{CF_REPO_NAME}}_${{CF_BRANCH}}'
