@@ -183,12 +183,13 @@ steps:
           - repo: '${{REPO_OWNER}}/${{REPO_NAME}}'
           - revision: '${{REPO_REVISION}}'
           - tag: '${{SAKAI_TAG}}'
-          - bin_release: '${{BINARY_RELEASE}}'
           - server: '${{TOMCAT_IMAGE}}'
+          - driver: '${{SAKAI_DB_DRIVER}}'
+          - code: '${{main_clone.revision}}'
+          - bin_release: '${{BINARY_RELEASE}}'
           - base_image: '${{SAKAI_BASE_TAG}}'
           - experimental: '${{EXPERIMENTAL_PROPS}}'
           - properties: '${{PROPERTIES_FILE}}'
-          - driver: '${{SAKAI_DB_DRIVER}}'
         
     launch_sakai_composition:
       title: Launch Sakai Server Composition
