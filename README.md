@@ -1,4 +1,4 @@
-# Sakai and Codefresh
+# Sakai and Codefresh [![Codefresh build status]( https://g.codefresh.io/api/badges/build?repoOwner=juanjmerono&repoName=sakai-codefresh&branch=master&pipelineName=sakai-from-source&accountName=juanjmerono_github&type=cf-1)]( https://g.codefresh.io/repositories/juanjmerono/sakai-codefresh/builds?filter=trigger:build;branch:master;service:58b20512a6eaef01002599bd~sakai-from-source)
 
 > Let's try any sakai branch easy
  
@@ -159,6 +159,8 @@ You need to promote your image first to a public registry, connect codefresh to 
 			* Type: `docker-compose up -d`
 			* Look at the port created to access to Sakai instance typing: `docker-compose ps`
 			* Connect to http://localhost:port/
+	* You can change tomcat region or any other tomcat configuration.
+		* Import the docker-compose.yml and change current CATALINA_OPTS or JAVA_OPTS.
 
 ## Complete list of variables
 
