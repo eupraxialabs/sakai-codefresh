@@ -52,6 +52,7 @@ steps:
        - MASTER_PASSWORD=${{MASTER_PASSWORD}}
        - ORACLE_USER=${{ORACLE_USER}}
        - ORACLE_PASS=${{ORACLE_PASS}}
+       - DEBUG_ENC=$${{DEBUG_ENC}}
       commands:
        - ./maven/mvnsecurity.sh
       when:
