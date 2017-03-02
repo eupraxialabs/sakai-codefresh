@@ -14,7 +14,7 @@ then
 else
 	echo "Missing master password..."
 fi
-if [ "$DEBUG_ENV" == "true" ]
+if [ "$DEBUG_ENC" == "true" ]
 then
 	echo "Debugging maven encryption..."
 	grep -e 'user\|pass\|master' ./maven/*.xml
