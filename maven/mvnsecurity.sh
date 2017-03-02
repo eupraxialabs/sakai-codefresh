@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ test ! -z $MASTER_PASSWORD ] 
+if [ ! -z $MASTER_PASSWORD ] 
 then
 	mvn -emp $MASTER_PASSWORD | sed -e 's/[\/&]/\\&/g' > $HOME/mvnmp.txt
 	MASTER_PASSWORD_ENC=$(cat $HOME/mvnmp.txt)
@@ -11,7 +11,7 @@ then
 	sed -i -e 's/##ORA_USER##/'$ORACLE_USER'/g' ./maven/settings.xml
 	sed -i -e 's/##ORA_PASS##/'$ORACLE_PASS_ENC'/g' ./maven/settings.xml
 fi
-if [ test $DEBUG_ENV = 'true' ]
+if [ "$DEBUG_ENV" == "true" ]
 then
 	grep -e 'user\|pass\|master' ./maven/*.xml
 fi
