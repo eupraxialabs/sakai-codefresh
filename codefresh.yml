@@ -79,7 +79,7 @@ steps:
        condition:
         all:
          notSakaiExperimental: '(includes("${{SAKAI_BASE_TAG}}", "$") == true) || ("${{SAKAI_BASE_TAG}}" == "-")'
-	   
+       
     build_code:
       title: Build Sakai Code Skiping Tests
       description: Classic Sakai build from code step without test execution
@@ -188,4 +188,5 @@ steps:
        condition:
         all:
          noSkipOracleBuild: '"${{SKIP_LAUNCH}}" != "true"'
+   
    
