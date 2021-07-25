@@ -17,7 +17,8 @@ steps:
     binary_release:
       title: Download Sakai Binary Release
       description: Download some binary Sakai release to test it without build from source
-      image: arkban/alpine-aws-wget:latest
+#      image: arkban/alpine-aws-wget:latest
+      image: tomcat:jdk8
       working_directory: ${{main_clone}}
       commands:
         - rm -rf ./tomcat/target
@@ -33,7 +34,8 @@ steps:
     clean_tomcat:
       title: Clean Tomcat Deployment
       description: Clear all tomcat folders
-      image: arkban/alpine-aws-wget:latest
+#      image: arkban/alpine-aws-wget:latest
+      image: tomcat:jdk8
       working_directory: ${{main_clone}}
       commands:
         - rm -rf ./tomcat/target
@@ -98,7 +100,8 @@ steps:
     build_dockerfile:
       title: Build Dockerfile
       description: Create dockerfile to build Sakai image
-      image: arkban/alpine-aws-wget:latest
+ #     image: arkban/alpine-aws-wget:latest
+      image: tomcat:jdk8
       working_directory: ${{main_clone}}
       commands:
         - touch ./tomcat/sakai/local.properties
@@ -118,7 +121,8 @@ steps:
     build_experimental_dockerfile:
       title: Build Dockerfile For Experimental
       description: Create dockerfile to build Sakai image with experimental properties
-      image: arkban/alpine-aws-wget:latest
+#      image: arkban/alpine-aws-wget:latest
+      image: tomcat:jdk8
       working_directory: ${{main_clone}}
       commands:
         - touch ./tomcat/sakai/local.properties

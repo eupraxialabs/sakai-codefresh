@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/sakai-codefresh.iml" filepath="$PROJECT_DIR$/.idea/sakai-codefresh.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wait/waitdb.iml" filepath="$PROJECT_DIR$/wait/waitdb.iml" />
+    </modules>
+  </component>
+</project>
